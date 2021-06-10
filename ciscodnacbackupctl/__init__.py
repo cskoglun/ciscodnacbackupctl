@@ -15,10 +15,10 @@ from ciscodnacbackupctl.config import Config
 author = "Robert Csapo"
 email = "rcsapo@cisco.com"
 description = "Cisco DNA Center Backup CLI"
-repo_url = "TODO"
+repo_url = "https://github.com/cskoglun/ciscodnacbackupctl"
 copyright = "Copyright (c) 2020 Cisco and/or its affiliates."
 license = "Cisco Sample Code License, Version 1.1"
-version = "0.1"
+version = "0.2.2"
 
 
 class Api:
@@ -30,8 +30,6 @@ class Api:
         _client = Config()
         if _client.config[0] is False:
             return
-            # raise Exception("Error: {}".format(_client.config[1])) TODO remove
-
         """
         Authenticate towards Cisco DNA Center
         """
@@ -52,7 +50,7 @@ class Api:
         return
 
     def _auth(self):
-        """ Cisco DNA Center Auth """
+        """Cisco DNA Center Auth"""
         url = "https://{}/dna/system/api/v1/auth/token".format(
             self.settings["dnac"]["hostname"]
         )
@@ -313,20 +311,20 @@ class Api:
 
         def delete(self, backup_id):
             console = Console()
+            for id in backup_id:
+                url = "https://{}{}{}".format(
+                    self.api.settings["dnac"]["hostname"],
+                    "/api/system/v1/maglev/backup/",
+                    id,
+                )
+                data = self.api._request(type="delete", url=url)
 
-            url = "https://{}{}{}".format(
-                self.api.settings["dnac"]["hostname"],
-                "/api/system/v1/maglev/backup/",
-                backup_id,
-            )
+                if "status" in data["response"]:
+                    if data["response"]["status"] == "ok":
+                        console.print(data["response"]["message"])
+                else:
+                    console.print("Error: {}".format(data["response"]))
 
-            data = self.api._request(type="delete", url=url)
-
-            if "status" in data["response"]:
-                if data["response"]["status"] == "ok":
-                    console.print(data["response"]["message"])
-            else:
-                console.print("Error: {}".format(data["response"]))
             return
 
         def schedule_backup(self, **kwargs):
@@ -459,16 +457,6 @@ class Api:
             for backup in backups_to_keep:
                 data["response"].remove(backup)
 
-            # TODO Remove if statement, this logic is performed in the purge function.
-            if kwargs["force"] is True:
-                for backup in data["response"]:
-                    pass
-                    # print(backup["backup_id"])
-                    # import random # TODO remove
-                    # backup["backup_id"] = random.randint(0,1000000)
-                    # self.api.delete(backup["backup_id"])
-                return data
-
             return data
 
         def purge(self, keep, incompatible, force):
@@ -528,10 +516,9 @@ class Api:
                 data = self.backups_to_delete(
                     incompatible=incompatible, keep=keep, force=True
                 )
-                print(data)
-
-                # for item in data:
-                #     self.delete(data["backup_id"]
+                
+                backup_id = [x["backup_id"] for x in data["response"]]
+                self.delete(backup_id)
                 return console.print(
-                    f"Success: Backups ({len(data['response'])}) deleted", style="green"
+                    f"Success: Backups ({len(data['response'])}) deleted {backup_id}", style="green"
                 )
