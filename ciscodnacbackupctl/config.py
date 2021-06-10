@@ -120,8 +120,6 @@ class Config:
         except Exception as e:
             return False, f"Can't read config file ({e})"
 
-        return False, "Can't read file - Unknown error"
-
     @classmethod
     def write(cls, hostname, username, password, secure, **kwargs):
         """
