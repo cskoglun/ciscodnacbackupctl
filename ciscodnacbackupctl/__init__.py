@@ -215,7 +215,9 @@ class Api:
             else:
                 if response.status_code == 404:
                     if "response" in response.json():
-                        raise Exception(f"Error: Not found ({response.json()['response']})")
+                        raise Exception(
+                            f"Error: Not found ({response.json()['response']})"
+                        )
                     raise Exception(f"Error: Not found ({response.text})")
                 data = response.json()
                 raise Exception(
@@ -244,7 +246,9 @@ class Api:
             else:
                 if response.status_code == 404:
                     if "response" in response.json():
-                        raise Exception(f"Error: Not found ({response.json()['response']})")
+                        raise Exception(
+                            f"Error: Not found ({response.json()['response']})"
+                        )
                     raise Exception(f"Error: Not found ({response.text})")
                 data = response.json()
                 raise Exception(
@@ -502,7 +506,7 @@ class Api:
                 )
                 if not confirm:
                     console.print("Warning: Purge aborted", style="red")
-                    return
+                    return True
 
                 """
                 Purging backups with force
@@ -515,9 +519,11 @@ class Api:
                 data = self.backups_to_delete(
                     incompatible=incompatible, keep=keep, force=True
                 )
-                
+
                 backup_id = [x["backup_id"] for x in data["response"]]
                 self.delete(backup_id)
-                return console.print(
-                    f"Success: Backups ({len(data['response'])}) deleted {backup_id}", style="green"
+                console.print(
+                    f"Success: Backups ({len(data['response'])}) deleted {backup_id}",
+                    style="green",
                 )
+                return True
