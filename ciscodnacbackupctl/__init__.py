@@ -18,7 +18,7 @@ description = "Cisco DNA Center Backup CLI"
 repo_url = "https://github.com/cskoglun/ciscodnacbackupctl"
 copyright = "Copyright (c) 2020 Cisco and/or its affiliates."
 license = "Cisco Sample Code License, Version 1.1"
-version = "0.2.2"
+version = "0.2.3"
 
 
 class Api:
@@ -68,8 +68,6 @@ class Api:
         )
 
         data = self._request(type="get", url=url)
-        # newlist = sorted(data["response"], key=lambda k: k['end_timestamp'])
-        # print(data)
         data["response"] = sorted(
             data["response"], key=lambda k: k["end_timestamp"], reverse=reverse
         )
@@ -195,9 +193,6 @@ class Api:
                 print(
                     "Error: ({})".format(data["response"].get("error", "Not Available"))
                 )
-                # raise Exception(
-                #     "Error: ({})".format(data["response"].get("error", "Not Available"))
-                # )
             return data
         if "delete" in kwargs["type"].lower():
             """
@@ -219,7 +214,9 @@ class Api:
                 data = response.json()
             else:
                 if response.status_code == 404:
-                    raise Exception("Error: Not found")
+                    if "response" in response.json():
+                        raise Exception(f"Error: Not found ({response.json()['response']})")
+                    raise Exception(f"Error: Not found ({response.text})")
                 data = response.json()
                 raise Exception(
                     "Error: ({})".format(data["response"].get("error", "Not Available"))
@@ -246,7 +243,9 @@ class Api:
                 data = response.json()
             else:
                 if response.status_code == 404:
-                    raise Exception("Error: Not found")
+                    if "response" in response.json():
+                        raise Exception(f"Error: Not found ({response.json()['response']})")
+                    raise Exception(f"Error: Not found ({response.text})")
                 data = response.json()
                 raise Exception(
                     "Error: ({})".format(data["response"].get("error", "Not Available"))
@@ -269,25 +268,24 @@ class Api:
                 data=self.api.settings["dnac"],
                 source="dict",
             )
-            return
+            return True
 
         def list(self, reverse):
             data = self.api.get(reverse=reverse)
             Format.cli(style="standard", data=data, source="list")
-            return
+            return True
 
         def history(self):
             data = self.api.get_history()
             Format.cli(style="standard", data=data, source="history")
-            return
+            return True
 
         def create(self, name):
             console = Console()
             url = "https://{}{}".format(
                 self.api.settings["dnac"]["hostname"], "/api/system/v1/maglev/backup"
             )
-            payload = {"description": name, "appstacks": {"ndp": {}}}
-
+            payload = {"description": name}
             payload = json.dumps(payload)
 
             data = self.api._request(type="post", url=url, payload=payload)
@@ -299,7 +297,7 @@ class Api:
                 message = data["response"]["error"]
                 console.print(f"Error: {message}")
 
-            return
+            return True
 
         def progress(self):
             """
@@ -307,7 +305,7 @@ class Api:
             """
             data = self.api.get_progress()
             Format.cli(style="standard", data=data, source="progress")
-            return
+            return True
 
         def delete(self, backup_id):
             console = Console()
@@ -325,7 +323,7 @@ class Api:
                 else:
                     console.print("Error: {}".format(data["response"]))
 
-            return
+            return True
 
         def schedule_backup(self, **kwargs):
             name = kwargs["name"]
@@ -482,9 +480,10 @@ class Api:
                 for i in range(0, len(backup_id_to_delete)):
                     self.delete(backup_id_to_delete[i])
                 Format.cli(style="standard", data=data, source="list")
-                return console.print(
+                console.print(
                     f"Success: Backups ({len(data['response'])}) deleted", style="green"
                 )
+                return True
             else:
                 """
                 Display candidates to be deleted
