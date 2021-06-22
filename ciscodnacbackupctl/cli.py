@@ -55,7 +55,7 @@ def cli(ctx):
 @cli.command("daemon", help="{}".format(daemonocle.Daemon.list_actions()))
 @click.option("--detach/--debug", default=True, help="Attach and debug")
 @click.option(
-    "--keep", type=int, default=3, help="Amount of backups to keep (default 3)"
+    "--keep", type=str, default=3, help="Amount of backups to keep (default 3)"
 )
 @click.argument("command", nargs=1)
 @click.pass_context
@@ -270,7 +270,7 @@ def schedule_backup(ctx, action, name, day, hour):
 
 @cli.command("purge")
 @click.option(
-    "--keep", type=int, default=3, help="Amount of backups to keep (default 3)"
+    "--keep", type=str, default=3, help="Amount of backups to keep (default 3)"
 )
 @click.option("--incompatible", is_flag=True, help="Remove incompatible backups")
 @click.option("--force", is_flag=True, help="No interactive prompt to confirm purge")
@@ -289,9 +289,9 @@ def purge(ctx, keep, incompatible, force):
     "--keep",
     "-k",
     required=False,
-    default=5,
-    type=int,
-    help="Amount of backups to keep, default is 5",
+    default=3,
+    type=str,
+    help="Amount of backups to keep, default is 3",
 )
 @click.option(
     "--day",
