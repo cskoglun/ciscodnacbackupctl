@@ -1,6 +1,6 @@
 import logging
 import os
-from datetime import datetime
+from datetime import timezone, timedelta, datetime
 from collections import OrderedDict
 import json
 import requests
@@ -18,7 +18,7 @@ description = "Cisco DNA Center Backup CLI"
 repo_url = "https://github.com/cskoglun/ciscodnacbackupctl"
 copyright = "Copyright (c) 2020 Cisco and/or its affiliates."
 license = "Cisco Sample Code License, Version 1.1"
-version = "0.2.3"
+version = "0.2.5"
 
 
 class Api:
@@ -421,6 +421,15 @@ class Api:
 
             return data
 
+        def backup_delta(self, data, days):
+            """ Calc delta times to keep backups based on days """
+            timenow = datetime.now(tz=timezone.utc)
+            keep = days[:-1]
+            delta = timenow - timedelta(int(keep))
+            delta_ts = datetime.timestamp(delta)
+            res = [b for b in data["response"] if b["end_timestamp"] >= delta_ts]
+            return res
+
         def backups_to_delete(self, **kwargs):
             """
             Purge (delete) Cisco DNA Center Backups
@@ -429,8 +438,8 @@ class Api:
             data = self.api.get(reverse=True)
 
             """
-                List of {backup_ids} to keep
-                """
+            List of {backup_ids} to keep
+            """
             backups_to_keep = []
 
             if kwargs["incompatible"]:
@@ -441,7 +450,13 @@ class Api:
                 for backup in data["response"]:
                     if backup["compatible"].upper() == "TRUE":
                         backups_to_keep.append(backup)
-
+            elif "d" in str(kwargs["keep"]):
+                """
+                Amount of {backup_ids} to keep based on days
+                """
+                backups = self.backup_delta(data, kwargs["keep"])
+                for backup in backups:
+                    backups_to_keep.append(backup)
             else:
                 """
                 Amount of {backup_ids} to keep
@@ -454,8 +469,8 @@ class Api:
                     else:
                         break
             """
-                Removing {backup_ids} in {backups_to_keep} from data["response"]
-                """
+            Removing {backup_ids} in {backups_to_keep} from data["response"]
+            """
             for backup in backups_to_keep:
                 data["response"].remove(backup)
 
@@ -471,7 +486,8 @@ class Api:
             )  # backups_to_delete
 
             if len(data["response"]) == 0:
-                return console.print("No backup to delete")
+                console.print("No backup to delete")
+                return False
             else:
                 backup_id_to_delete = []
                 for item in range(0, len(data["response"])):

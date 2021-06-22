@@ -1,0 +1,7 @@
+{
+    "version": "1.4.0",
+    "response": {
+        "message": "Deleted backup (backup_id='378cc8e5-7d16-4eff-a747-7b5609219f42')",
+        "status": "ok"
+    }
+}
