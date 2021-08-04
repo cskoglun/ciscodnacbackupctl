@@ -18,7 +18,7 @@ description = "Cisco DNA Center Backup CLI"
 repo_url = "https://github.com/cskoglun/ciscodnacbackupctl"
 copyright = "Copyright (c) 2020 Cisco and/or its affiliates."
 license = "Cisco Sample Code License, Version 1.1"
-version = "0.2.5"
+version = "0.2.6"
 
 
 class Api:
