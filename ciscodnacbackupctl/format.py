@@ -33,7 +33,14 @@ class Format:
 
         elif kwargs["source"] == "history":
             for d in kwargs["data"]["response"]:
-                columns, rows = cls.__history(d)
+                __columns, __rows = cls.__history(d)
+                
+                """ Don't override existing table """
+                if len(__columns) != 0:
+                    columns = __columns
+                if len(__rows) != 0:
+                    rows = __rows
+                
                 table.append(rows)
 
         elif kwargs["source"] == "progress":
