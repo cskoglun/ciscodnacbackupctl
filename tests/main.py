@@ -81,16 +81,61 @@ class TestBackend(unittest.TestCase):
             self.assertEqual(res, True)
             return
 
-    """ Test delete backups """
+    """ Test delete one backup """
 
     @patch("ciscodnacbackupctl.Api._auth")
-    def test_delete(self, auth):
+    def test_delete_working(self, auth):
         print("")
         with patch("ciscodnacbackupctl.Api._request") as api:
             api.return_value = self.mockup_response("delete")
             cli = ciscodnacbackupctl.Api.CLI()
-            res = cli.delete(["123", "123", "32553"])
+            res = cli.delete("54d7930a-057c-4c41-b35c-30494133234a")
             self.assertEqual(res, True)
+            return
+    
+    """ Test delete multiple backups """
+
+    @patch("ciscodnacbackupctl.Api._auth")
+    def test_delete_multi_working(self, auth):
+        print("")
+        with patch("ciscodnacbackupctl.Api._request") as api:
+            api.return_value = self.mockup_response("delete")
+            cli = ciscodnacbackupctl.Api.CLI()
+            res = cli.delete(["54d7930a-057c-4c41-b35c-30494133234a", "54d7930a-057c-4c41-b35c-30494133234b", "54d7930a-057c-4c41-b35c-30494133234c"])
+            self.assertEqual(res, True)
+            return
+    
+    """ Test delete backup with invalid uuid length """
+
+    @patch("ciscodnacbackupctl.Api._auth")
+    def test_delete_incorrect_uuid(self, auth):
+        print("")
+        with patch("ciscodnacbackupctl.Api._request") as api:
+            api.return_value = self.mockup_response("delete")
+            cli = ciscodnacbackupctl.Api.CLI()
+            self.assertRaises(ValueError, cli.delete, "123")
+            return
+    
+    """ Test delete multiple backups with invalid uuid length """
+
+    @patch("ciscodnacbackupctl.Api._auth")
+    def test_delete_incorrect_uuids(self, auth):
+        print("")
+        with patch("ciscodnacbackupctl.Api._request") as api:
+            api.return_value = self.mockup_response("delete")
+            cli = ciscodnacbackupctl.Api.CLI()
+            self.assertRaises(ValueError, cli.delete, ["123", "123", "32553"])
+            return
+    
+    """ Test delete backup with invalid type """
+
+    @patch("ciscodnacbackupctl.Api._auth")
+    def test_delete_incorrect_type(self, auth):
+        print("")
+        with patch("ciscodnacbackupctl.Api._request") as api:
+            api.return_value = self.mockup_response("delete")
+            cli = ciscodnacbackupctl.Api.CLI()
+            self.assertRaises(TypeError, cli.delete, {"id": "dict"})
             return
 
     """ Test purge incompatible backups """

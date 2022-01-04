@@ -18,7 +18,7 @@ description = "Cisco DNA Center Backup CLI"
 repo_url = "https://github.com/cskoglun/ciscodnacbackupctl"
 copyright = "Copyright (c) 2020 Cisco and/or its affiliates."
 license = "Cisco Sample Code License, Version 1.1"
-version = "0.2.6"
+version = "0.2.7"
 
 
 class Api:
@@ -313,7 +313,12 @@ class Api:
 
         def delete(self, backup_id):
             console = Console()
-            for id in backup_id:
+            """
+            Task to delete backups, either from str or list
+            """
+            def task(id):
+                if len(id) != 36:
+                    raise ValueError(f"Invalid Backup ID - {id}")
                 url = "https://{}{}{}".format(
                     self.api.settings["dnac"]["hostname"],
                     "/api/system/v1/maglev/backup/",
@@ -326,6 +331,15 @@ class Api:
                         console.print(data["response"]["message"])
                 else:
                     console.print("Error: {}".format(data["response"]))
+
+                return True
+            if isinstance(backup_id, str):
+                task(backup_id)
+            elif isinstance(backup_id, list):
+                for id in backup_id:
+                    task(id)
+            else:
+                raise TypeError(f"Incorrect type for backup_id - {type(backup_id)}")
 
             return True
 
