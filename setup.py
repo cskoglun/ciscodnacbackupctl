@@ -17,7 +17,7 @@ setup(
     description=ciscodnacbackupctl.description,
     long_description=long_description,
     long_description_content_type="text/markdown",
-    #url=ciscodnacbackupctl.repo_url, TODO
+    url=ciscodnacbackupctl.repo_url,
     version=ciscodnacbackupctl.version,
     packages=find_packages(),
     py_modules=["ciscodnacbackupctl"],
