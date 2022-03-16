@@ -30,7 +30,7 @@ def app_daemon(
         cli = ctl.CLI()
         force = True
         try:
-            purge = cli.purge(keep=keep, incompatible=incompatible, force=force)
+            purge = cli.purge(keep=KEEP, incompatible=incompatible, force=force)
         except Exception as error_msg:
             console.print(
                 "Cisco DNA Center isn't available - {}".format(error_msg), style="green"

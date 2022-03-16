@@ -1,2 +1,5 @@
 .venv/
 ciscodnacbackupctl/__pycache__/*
+ciscodnacbackupctl.egg-info/*
+dist/*
+build/*
