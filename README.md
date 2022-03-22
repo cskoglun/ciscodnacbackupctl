@@ -1,4 +1,12 @@
 # ciscodnacbackupctl
+![PyPI](https://img.shields.io/pypi/v/ciscodnacbackupctl)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/ciscodnacbackupctl)
+![GitHub last commit](https://img.shields.io/github/last-commit/cskoglun/ciscodnacbackupctl)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/cskoglun/ciscodnacbackupctl)
+![GitHub issues](https://img.shields.io/github/issues/cskoglun/ciscodnacbackupctl)
+![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/cskoglun/ciscodnacbackupctl)
+![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/cskoglun/ciscodnacbackupctl)
+![GitHub Repo stars](https://img.shields.io/github/stars/cskoglun/ciscodnacbackupctl?style=social)  
 
 Cisco DNA Center Backup Tool (as a CLI tool)  
 _Helps you to manage your backups and purge previous backups and also incompatible backups (between versions)_
