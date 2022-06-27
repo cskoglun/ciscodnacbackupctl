@@ -24,7 +24,7 @@ setup(
     install_requires=requirements,
     entry_points="""
         [console_scripts]
-        ciscodnacbackupctl=ciscodnacbackupctl.cli:cli
+        ciscodnacbackupctl=ciscodnacbackupctl.cli:entry
     """,
     python_requires=">=3.8",
 )

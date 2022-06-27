@@ -44,6 +44,18 @@ class TestBackend(unittest.TestCase):
             res = cli.list(True)
             self.assertEqual(res, True)
             return
+    
+    """ Test list backups with Debug enabled """
+
+    @patch("ciscodnacbackupctl.Api._auth")
+    def test_list_debug(self, auth):
+        print("")
+        with patch("ciscodnacbackupctl.Api._request") as api:
+            api.return_value = self.mockup_response("list")
+            cli = ciscodnacbackupctl.Api.CLI(debug=True)
+            res = cli.list(True)
+            self.assertEqual(res, True)
+            return
 
     """ Test list history """
 

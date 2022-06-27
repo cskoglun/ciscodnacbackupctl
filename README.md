@@ -27,6 +27,7 @@ But there's no automated way of purging backups and users are asked to purge bac
 - [x] Schedule backups
     - [x] New Backup
     - [x] Purge
+- [x] Debug HTTP
 
 ## Installation
 
@@ -49,12 +50,12 @@ Options:
 ```
 
 ```
-ciscodnacbackupctl --help
 Usage: ciscodnacbackupctl [OPTIONS] COMMAND [ARGS]...
 
 Options:
-  --version  Show the version and exit.
-  --help     Show this message and exit.
+  --debug / --no-debug
+  --version             Show the version and exit.
+  --help                Show this message and exit.
 
 Commands:
   config
@@ -90,8 +91,6 @@ This makes it possible to automatically purge old backups daily
 
 ### Daemon
 ```ciscodnacbackupctl daemon start --keep 3```
-
-### Docker Support Coming soon
 
 ## Authors & Maintainers
 

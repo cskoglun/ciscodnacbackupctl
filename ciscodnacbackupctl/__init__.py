@@ -11,6 +11,7 @@ from rich.console import Console
 import click
 from ciscodnacbackupctl.format import Format
 from ciscodnacbackupctl.config import Config
+from ciscodnacbackupctl.debug import Debug
 
 author = "Robert Csapo"
 email = "rcsapo@cisco.com"
@@ -18,7 +19,7 @@ description = "Cisco DNA Center Backup CLI"
 repo_url = "https://github.com/cskoglun/ciscodnacbackupctl"
 copyright = "Copyright (c) 2020 Cisco and/or its affiliates."
 license = "Cisco Sample Code License, Version 1.1"
-version = "0.2.8"
+version = "0.2.10"
 
 
 class Api:
@@ -155,6 +156,9 @@ class Api:
                 headers=headers,
                 verify=self.settings["dnac"]["secure"],
             )
+
+            Debug.payload(str(response.text))
+
             if response.ok:
                 data = response.json()
             else:
@@ -183,6 +187,9 @@ class Api:
                 headers=headers,
                 verify=self.settings["dnac"]["secure"],
             )
+
+            Debug.payload(str(response.text))
+
             response.raise_for_status()
             if response.ok:
                 data = response.json()
@@ -210,6 +217,9 @@ class Api:
                 headers=headers,
                 verify=self.settings["dnac"]["secure"],
             )
+
+            Debug.payload(str(response.text))
+
             if response.ok:
                 data = response.json()
             else:
@@ -239,6 +249,10 @@ class Api:
                 verify=self.settings["dnac"]["secure"],
                 data=kwargs["payload"],
             )
+            
+
+            Debug.payload(str(response.text))
+
             if response.ok:
                 data = response.json()
             elif response.status_code == 409:
@@ -257,8 +271,11 @@ class Api:
             return data
 
     class CLI:
-        def __init__(self):
+        def __init__(self, debug=False):
+            if debug:
+                Debug()
             self.api = Api()
+            
 
         def whoami(self, **kwargs):
             if "DNAC_CONFIG" in os.environ:
@@ -336,6 +353,9 @@ class Api:
             if isinstance(backup_id, str):
                 task(backup_id)
             elif isinstance(backup_id, list):
+                for id in backup_id:
+                    task(id)
+            elif isinstance(backup_id, tuple):
                 for id in backup_id:
                     task(id)
             else:
