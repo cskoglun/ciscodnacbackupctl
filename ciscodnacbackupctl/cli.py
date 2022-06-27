@@ -46,11 +46,14 @@ def app_daemon(
     return
 
 @click.group()
+@click.option('--debug/--no-debug', default=False)
 @click.version_option()
 @click.pass_context
-def cli(ctx):
+def cli(ctx, debug):
+    ctx.obj["DEBUG"] = debug
+    if debug:
+        print("Debug mode: {}".format(debug))
     pass
-
 
 @cli.command("daemon", help="{}".format(daemonocle.Daemon.list_actions()))
 @click.option("--detach/--debug", default=True, help="Attach and debug")
@@ -82,7 +85,7 @@ def daemon(ctx, detach, keep, command):
 @click.option("--cfg", is_flag=True, help="Read local cfg")
 @click.pass_context
 def whoami(ctx, cfg):
-    cli = ciscodnacbackupctl.Api.CLI()
+    cli = ciscodnacbackupctl.Api.CLI(debug=ctx.obj["DEBUG"])
     cli.whoami(cfg=cfg)
     return
 
@@ -176,7 +179,7 @@ def config(ctx, env, hostname, username, password, secure, overwrite, encode):
 @click.option("--reverse/--no-reverse", default=False)
 @click.pass_context
 def list(ctx, reverse):
-    cli = ciscodnacbackupctl.Api.CLI()
+    cli = ciscodnacbackupctl.Api.CLI(debug=ctx.obj["DEBUG"])
     cli.list(reverse)
     return
 
@@ -184,7 +187,7 @@ def list(ctx, reverse):
 @cli.command("progress")
 @click.pass_context
 def progress(ctx):
-    cli = ciscodnacbackupctl.Api.CLI()
+    cli = ciscodnacbackupctl.Api.CLI(debug=ctx.obj["DEBUG"])
     cli.progress()
     return
 
@@ -192,7 +195,7 @@ def progress(ctx):
 @cli.command("history")
 @click.pass_context
 def history(ctx):
-    cli = ciscodnacbackupctl.Api.CLI()
+    cli = ciscodnacbackupctl.Api.CLI(debug=ctx.obj["DEBUG"])
     cli.history()
     return
 
@@ -201,7 +204,7 @@ def history(ctx):
 @click.option("--name", required=True, help="Name of backup")
 @click.pass_context
 def create(ctx, name):
-    cli = ciscodnacbackupctl.Api.CLI()
+    cli = ciscodnacbackupctl.Api.CLI(debug=ctx.obj["DEBUG"])
     cli.create(name)
     return
 
@@ -212,7 +215,7 @@ def create(ctx, name):
 #@click.argument("--backup_id", required=True, nargs=-1)
 @click.pass_context
 def delete(ctx, backup_id, id):
-    cli = ciscodnacbackupctl.Api.CLI()
+    cli = ciscodnacbackupctl.Api.CLI(debug=ctx.obj["DEBUG"])
     cli.delete(id)
     return
 
@@ -250,7 +253,7 @@ def delete(ctx, backup_id, id):
 @click.pass_context
 def schedule_backup(ctx, action, name, day, hour):
     action = action.lower()
-    cli = ciscodnacbackupctl.Api().CLI()
+    cli = ciscodnacbackupctl.Api().CLI(debug=ctx.obj["DEBUG"])
     console = rich.get_console()
     data = cli.schedule_backup(name=name, day=day, time=hour, action=action)
     print(data)
@@ -276,7 +279,7 @@ def schedule_backup(ctx, action, name, day, hour):
 @click.option("--force", is_flag=True, help="No interactive prompt to confirm purge")
 @click.pass_context
 def purge(ctx, keep, incompatible, force):
-    cli = ciscodnacbackupctl.Api().CLI()
+    cli = ciscodnacbackupctl.Api().CLI(debug=ctx.obj["DEBUG"])
     purge = cli.purge(keep=keep, incompatible=incompatible, force=force)
 
 
@@ -312,7 +315,7 @@ def purge(ctx, keep, incompatible, force):
 @click.pass_context
 def schedule_purge(ctx, interval, incompatible, keep, day, hour):
     ctl = ciscodnacbackupctl.Api()
-    cli = ctl.CLI()
+    cli = ctl.CLI(debug=ctx.obj["DEBUG"])
     console = rich.get_console()
 
     interval = interval.lower()
@@ -358,4 +361,7 @@ def schedule_purge(ctx, interval, incompatible, keep, day, hour):
 
 
 if __name__ == "__main__":
-    cli()
+    cli(obj={})
+
+def entry():
+    cli(obj={})
