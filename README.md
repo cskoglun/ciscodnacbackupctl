@@ -29,6 +29,11 @@ But there's no automated way of purging backups and users are asked to purge bac
     - [x] Purge
 - [x] Debug HTTP
 
+### Unsupported features
+- Assurance backups (NFS)
+  - _"The Assurance data consists of network assurance and analytics data. The first backup of Assurance data is a full backup. After that, backups are incremental."_
+  - [Details](https://www.cisco.com/c/en/us/td/docs/cloud-systems-management/network-automation-and-management/dna-center/2-3-3/admin_guide/b_cisco_dna_center_admin_guide_2_3_3/b_cisco_dna_center_admin_guide_2_3_3_chapter_0110.html)
+
 ## Installation
 
 ```pip install ciscodnacbackupctl```
