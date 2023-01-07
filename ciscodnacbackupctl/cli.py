@@ -32,7 +32,7 @@ def app_daemon(
         try:
             purge = cli.purge(keep=KEEP, incompatible=incompatible, force=force)
         except Exception as error_msg:
-            console.print(
+            console.log(
                 "Cisco DNA Center isn't available - {}".format(error_msg), style="green"
             )
             pass
@@ -331,7 +331,7 @@ def schedule_purge(ctx, interval, incompatible, keep, day, hour):
         try:
             purge = cli.purge(keep=keep, incompatible=incompatible, force=force)
         except Exception as error_msg:
-            console.print(
+            console.log(
                 "Cisco DNA Center isn't available - {}".format(error_msg), style="green"
             )
             pass

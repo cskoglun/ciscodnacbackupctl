@@ -19,7 +19,7 @@ description = "Cisco DNA Center Backup CLI"
 repo_url = "https://github.com/cskoglun/ciscodnacbackupctl"
 copyright = "Copyright (c) 2020 Cisco and/or its affiliates."
 license = "Cisco Sample Code License, Version 1.1"
-version = "0.2.10"
+version = "0.2.11"
 
 
 class Api:
@@ -313,10 +313,10 @@ class Api:
 
             if type(data["response"]) == str:
                 message = data["response"]
-                console.print(f"Creating backup with id: {message}")
+                console.log(f"Creating backup with id: {message}")
             else:
                 message = data["response"]["error"]
-                console.print(f"Error: {message}")
+                console.log(f"Error: {message}")
 
             return True
 
@@ -345,9 +345,9 @@ class Api:
 
                 if "status" in data["response"]:
                     if data["response"]["status"] == "ok":
-                        console.print(data["response"]["message"])
+                        console.log(data["response"]["message"])
                 else:
-                    console.print("Error: {}".format(data["response"]))
+                    console.log("Error: {}".format(data["response"]))
 
                 return True
             if isinstance(backup_id, str):
@@ -520,7 +520,7 @@ class Api:
             )  # backups_to_delete
 
             if len(data["response"]) == 0:
-                console.print("No backup to delete")
+                console.log("No backup to delete")
                 return False
             else:
                 backup_id_to_delete = []
@@ -534,7 +534,7 @@ class Api:
                 for i in range(0, len(backup_id_to_delete)):
                     self.delete(backup_id_to_delete[i])
                 Format.cli(style="standard", data=data, source="list")
-                console.print(
+                console.log(
                     f"Success: Backups ({len(data['response'])}) deleted", style="green"
                 )
                 return True
@@ -555,13 +555,13 @@ class Api:
                     type=bool,
                 )
                 if not confirm:
-                    console.print("Warning: Purge aborted", style="red")
+                    console.log("Warning: Purge aborted", style="red")
                     return True
 
                 """
                 Purging backups with force
                 """
-                console.print(
+                console.log(
                     "Deleting... (this could take a while - as it's synchronous API calls)",
                     style="red",
                 )
@@ -572,7 +572,7 @@ class Api:
 
                 backup_id = [x["backup_id"] for x in data["response"]]
                 self.delete(backup_id)
-                console.print(
+                console.log(
                     f"Success: Backups ({len(data['response'])}) deleted {backup_id}",
                     style="green",
                 )
