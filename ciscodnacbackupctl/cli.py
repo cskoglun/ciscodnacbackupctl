@@ -328,6 +328,8 @@ def schedule_purge(ctx, interval, incompatible, keep, day, hour):
 
     def job():
         force = True
+        ctl = ciscodnacbackupctl.Api() 
+        cli = ctl.CLI(debug=ctx.obj["DEBUG"]) 
         try:
             purge = cli.purge(keep=keep, incompatible=incompatible, force=force)
         except Exception as error_msg:
