@@ -222,6 +222,10 @@ class Api:
 
             if response.ok:
                 data = response.json()
+            # DNAC tends to return "HTTP 504 Gateway timeout", 
+            # even if the deletion request was successful
+            elif response.status_code == 504:
+                data = { 'response' : "{} {}".format(response.status_code, response.reason)}
             else:
                 if response.status_code == 404:
                     if "response" in response.json():
